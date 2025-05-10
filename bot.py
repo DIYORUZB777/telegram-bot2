@@ -36,7 +36,7 @@ def handle_text(update, context):
         update.message.reply_text("9860170103586914")
     elif text == "uzcard":
         update.message.reply_text("5614681915173910")
-    elif text == "Visa":
+    elif text == "visa":
         update.message.reply_text("4790912210044568")
     else:
         # Foydalanuvchi xabarini adminga forward qiladi
