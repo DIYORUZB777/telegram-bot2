@@ -8,6 +8,16 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 
 TOKEN = os.environ.get("TOKEN")
 ADMIN_ID = int(os.environ.get("ADMIN_ID"))
+from datetime import datetime
+import pytz
+
+# Ish vaqtini tekshiruvchi funksiya
+def is_within_working_hours():
+    uzbekistan = pytz.timezone("Asia/Tashkent")
+    now = datetime.now(uzbekistan)
+    start_hour = 9
+    end_hour = 23
+    return start_hour <= now.hour < end_hour
 
 # Xabar ID va foydalanuvchi ID ni vaqtincha saqlash uchun
 user_message_map = {}
@@ -16,7 +26,10 @@ def start(update, context):
     update.message.reply_text("Salom! Menga 'humo' yoki 'uzcard' deb yozing.")
 
 def handle_text(update, context):
-    user_id = update.message.chat_id
+    if not is_within_working_hours():
+        update.message.reply_text("🕒 Hozir ish vaqtidan tashqarida. Iltimos, 09:00–23:00 oralig‘ida yozing.")
+        return
+
     text = update.message.text.lower()
 
     if text == "humo":
@@ -24,9 +37,14 @@ def handle_text(update, context):
     elif text == "uzcard":
         update.message.reply_text("5614681915173910")
     else:
-        # Foydalanuvchi xabarini adminga forward qiladi va mapping saqlaydi
-        forwarded = context.bot.forward_message(chat_id=ADMIN_ID, from_chat_id=user_id, message_id=update.message.message_id)
-        user_message_map[forwarded.message_id] = user_id
+        # Foydalanuvchi xabarini adminga forward qiladi
+        forwarded = context.bot.forward_message(
+            chat_id=ADMIN_ID,
+            from_chat_id=update.message.chat_id,
+            message_id=update.message.message_id
+        )
+        user_message_map[forwarded.message_id] = update.message.chat_id
+
 
 def handle_photo(update, context):
     forwarded = context.bot.forward_message(chat_id=ADMIN_ID, from_chat_id=update.message.chat_id, message_id=update.message.message_id)
