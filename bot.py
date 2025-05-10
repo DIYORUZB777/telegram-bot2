@@ -39,13 +39,14 @@ def handle_text(update, context):
     elif text == "visa":
         update.message.reply_text("4790912210044568")
     else:
-        # Foydalanuvchi xabarini adminga forward qiladi
+        update.message.reply_text("❗ Iltimos, faqat quyidagi so‘zlardan birini yozing: 'humo', 'uzcard', 'visa'")
         forwarded = context.bot.forward_message(
             chat_id=ADMIN_ID,
             from_chat_id=update.message.chat_id,
             message_id=update.message.message_id
         )
         user_message_map[forwarded.message_id] = update.message.chat_id
+
 
 
 def handle_photo(update, context):
