@@ -22,7 +22,7 @@ def is_within_working_hours():
 # Foydalanuvchi ID ni vaqtincha saqlash uchun
 user_message_map = {}
 
-# /start buyrug‘i
+# /start buyrug‘i → Tugmalar chiqaradi
 def start(update, context):
     keyboard = [
         [InlineKeyboardButton("💳 Visa", callback_data='visa')],
@@ -32,19 +32,31 @@ def start(update, context):
     reply_markup = InlineKeyboardMarkup(keyboard)
     update.message.reply_text("Quyidagilardan birini tanlang:", reply_markup=reply_markup)
 
-# Tugma bosilganda
+# Tugma bosilganda → Karta raqami yoki orqaga tugmasi
 def button_handler(update, context):
     query = update.callback_query
     query.answer()
     card = query.data
 
-    cards = {
-        "visa": "4790912210044568",
-        "uzcard": "5614681915173910",
-        "humo": "9860170103586914"
-    }
-
-    query.edit_message_text(text=f"{card.upper()} raqam: {cards[card]}")
+    if card == "back":
+        # Orqaga tugmasi bosilganda — kartalar menyusiga qaytish
+        keyboard = [
+            [InlineKeyboardButton("💳 Visa", callback_data='visa')],
+            [InlineKeyboardButton("💳 Uzcard", callback_data='uzcard')],
+            [InlineKeyboardButton("💳 Humo", callback_data='humo')]
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        query.edit_message_text("Quyidagilardan birini tanlang:", reply_markup=reply_markup)
+    else:
+        # Karta raqami + orqaga tugmasi
+        cards = {
+            "visa": "4790912210044568",
+            "uzcard": "5614681915173910",
+            "humo": "9860170103586914"
+        }
+        keyboard = [[InlineKeyboardButton("◀️ Orqaga", callback_data='back')]]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        query.edit_message_text(text=f"{card.upper()} raqam: {cards[card]}", reply_markup=reply_markup)
 
 # Matnli xabarlar
 def handle_text(update, context):
@@ -61,7 +73,7 @@ def handle_text(update, context):
     elif text == "visa":
         update.message.reply_text("4790912210044568")
     else:
-        update.message.reply_text("❗ Iltimos, faqat quyidagilardan birini yozing: 'humo', 'uzcard', 'visa'")
+        update.message.reply_text("❗ Iltimos, faqat quyidagi so‘zlardan birini yozing: 'humo', 'uzcard', 'visa'")
         forwarded = context.bot.forward_message(
             chat_id=ADMIN_ID,
             from_chat_id=update.message.chat_id,
