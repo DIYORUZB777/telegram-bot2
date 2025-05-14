@@ -51,7 +51,7 @@ def button_handler(update, context):
         # Karta raqami + orqaga tugmasi
         cards = {
             "visa": "4790912210044568",
-            "uzcard": "5614681915173910",
+            "uzcard": "5614681915273910",
             "humo": "9860170103586914"
         }
         keyboard = [[InlineKeyboardButton("◀️ Orqaga", callback_data='back')]]
