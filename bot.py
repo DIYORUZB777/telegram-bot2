@@ -69,7 +69,7 @@ def handle_text(update, context):
     if text == "humo":
         update.message.reply_text("9860170103586914")
     elif text == "uzcard":
-        update.message.reply_text("5614681915173910")
+        update.message.reply_text("5614681915273910")
     elif text == "visa":
         update.message.reply_text("4790912210044568")
     else:
